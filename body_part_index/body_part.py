@@ -8,7 +8,7 @@ class BodyPart:
         if "codes" in kwargs :
             # TODO: check that kwargs["codes"] has the right structure
             for code in kwargs["codes"] :
-                self.codes.append((code["system"], code["code"])
+                self.codes.append((code["system"], code["code"]))
         if "synonyms" in kwargs :
             # TODO: check to see that kwargs["codes"] has the right structure
             self.synonyms = set(kwargs["synonyms"])
