@@ -1,0 +1,115 @@
+{
+  "$version": "DEV2022-04-25T18:28:26.959Z",
+  "$schema": "body_parts_schema.json",
+  "bodyParts": [
+    {
+      "radlexId": "RID39569",
+      "description": "whole body",
+      "containedById": "RID39569",
+      "codes": [
+        {
+          "system": "SNOMED",
+          "code": "261188006"
+        },
+        {
+          "system": "UMLS",
+          "code": "C0017421"
+        }
+      ]
+    },
+    {
+      "radlexId": "RID56",
+      "description": "abdomen",
+      "containedById": "RID39569",
+      "synonyms": ["abdominopelvis", "abdominopelvic region"],
+      "codes": [
+        {
+          "system": "SNOMED",
+          "code": "818983003"
+        },
+        {
+          "system": "MESH",
+          "code": "A01.923.047"
+        }
+      ]
+    },
+    {
+      "radlexId": "RID2507",
+      "description": "pelvis",
+      "containedById": "RID39569",
+      "synonyms": ["lesser pelvis", "pelvis minor", "true pelvis"],
+      "codes": [
+        {
+          "system": "FMA",
+          "code": "9578"
+        },
+        {
+          "system": "SNOMED",
+          "code": "12921003"
+        },
+        {
+          "system": "MESH",
+          "code": "A01.923.600"
+        },
+        {
+          "system": "UMLS",
+          "code": "C0030797"
+        }
+      ]
+    },
+    {
+      "radlexId": "RID294",
+      "description": "uterine adnexa",
+      "containedById": "RID2507",
+      "leftId": "RID294_RID5824",
+      "rightId": "RID294_RID5825",
+      "sexSpecific": "Female",
+      "partOfId": "RID270",
+      "synonyms": ["adnexa"],
+      "codes": [
+        {
+          "system": "FMA",
+          "code": "265256"
+        },
+        {
+          "system": "SNOMED",
+          "code": "23043003"
+        },
+        {
+          "system": "UMLS",
+          "code": "C0001575"
+        }
+      ]
+    },
+    {
+      "radlexId": "RID294_RID5824",
+      "description": "left uterine adnexa",
+      "containedById": "RID2507",
+      "unsidedId": "RID294",
+      "rightId": "RID294_RID5825",
+      "partOfId": "RID270",
+      "codes": [
+        {
+          "system": "SNOMED",
+          "code": "110635008"
+        }
+      ],
+      "sexSpecific": "Female"
+    },
+    {
+      "radlexId": "RID294_RID5825",
+      "description": "right uterine adnexa",
+      "containedById": "RID2507",
+      "unsidedId": "RID294",
+      "leftId": "RID294_RID5824",
+      "partOfId": "RID270",
+      "codes": [
+        {
+          "system": "SNOMED",
+          "code": "110634007"
+        }
+      ],
+      "sexSpecific": "Female"
+    }
+  ]
+}
