@@ -1,11 +1,15 @@
+# TODO: Set up PyPI publishing
 [tool.poetry]
 name = "body_part_index"
 version = "0.1.0"
 description = "Standard anatomic location tags for medical imaging informatics"
-authors = ["Tarik Alkasab <tarik.alkasab@gmail.com>"]
+readme = "README.md"
+authors = ["Anatomic Locations Project <info@anatomiclocations.org>"]
+license = "ISC"
+homepage = "https://www.anatomiclocations.org"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "*"
