@@ -35,7 +35,14 @@ def test_basic_properties(sample_body_part_index: BodyPartIndex,
     actual = (body_part.radlex_id, body_part.description, body_part.contained_by_id)
     expected = (radlex_id, description, contained_by_id)
     assert actual == expected
-    
+
+def test_synonyms(sample_body_part_index: BodyPartIndex):
+    """Make sure we can get synonyms for BodyParts."""
+    body_part = sample_body_part_index.get_by_id('RID2507')
+    actual = body_part.synonyms
+    expected = ["lesser pelvis", "pelvis minor", "true pelvis"]
+    assert actual == expected
+
 def test_codes(sample_body_part_index: BodyPartIndex):
     """Make sure we can get codes for BodyParts."""
     body_part = sample_body_part_index.get_by_id('RID2507')

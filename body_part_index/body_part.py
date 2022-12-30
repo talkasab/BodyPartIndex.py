@@ -70,9 +70,9 @@ class BodyPartData:
         code_dicts = body_part_dict.get("codes", None)
         if code_dicts is not None:
             kwargs["codes"] = [Code(**code_dict) for code_dict in code_dicts]
-        systems = body_part_dict.get("systems", None)
-        if systems is not None and isinstance(systems, List[str]):
-            kwargs["systems"] = systems
+        synonyms = body_part_dict.get("synonyms", None)
+        if synonyms is not None and len(synonyms) > 0:
+            kwargs["synonyms"] = synonyms
         if "unsidedId" in body_part_dict:
             kwargs["unsided_id"] = body_part_dict["unsidedId"]
         if "leftId" in body_part_dict:
