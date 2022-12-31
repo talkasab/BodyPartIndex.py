@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring
 import os
 import json
 import pytest
@@ -11,7 +12,7 @@ def get_filename_in_tests_dir(filename: str) -> str:
     return os.path.join(os.path.dirname(__file__), filename)
 
 @pytest.fixture
-def sample_json_data_filename():
+def sample_json_data_filename() -> str:
     """Returns the sample json data filename for the tests."""
     return get_filename_in_tests_dir(SAMPLE_BODYPARTS_FILENAME)
 

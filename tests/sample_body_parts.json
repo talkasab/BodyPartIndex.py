@@ -1,6 +1,6 @@
 {
   "$version": "DEV2022-04-25T18:28:26.959Z",
-  "$schema": "body_parts_schema.json",
+  "$schema": "https://raw.githubusercontent.com/talkasab/anatomiclocations.org/main/data/body_parts_schema.json",
   "bodyParts": [
     {
       "radlexId": "RID39569",
@@ -110,6 +110,26 @@
         }
       ],
       "sexSpecific": "Female"
+    },
+    {
+        "radlexId": "RID270",
+        "description": "female genital system",
+        "containedById": "RID2507",
+        "sexSpecific": "Female",
+        "codes": [
+          {
+            "system": "FMA",
+            "code": "45664"
+          },
+          {
+            "system": "SNOMED",
+            "code": "53065001"
+          },
+          {
+            "system": "UMLS",
+            "code": "C0017422"
+          }
+        ]
     }
-  ]
+ ]
 }

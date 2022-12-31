@@ -52,7 +52,7 @@ class BodyPartIndex:
     def _get_json_data_from_file(self, json_filename: str) -> Dict:
         with open(json_filename, encoding='utf-8') as json_file:
             return json.load(json_file)
-    
+
     def _add_to_indices(self, body_part: BodyPart) -> None:
         def add_to_text_index(text: str, body_part: BodyPart) -> None:
             if text not in self.__text_index:
@@ -74,7 +74,7 @@ class BodyPartIndex:
                 add_to_text_index(synonym, body_part)
         for code in body_part.codes:
             add_to_text_index(code.code, body_part)
-        
+
 
     def _initialize(self, json_data: Dict) -> None:
         self.__index: Dict[str, BodyPart] = {}

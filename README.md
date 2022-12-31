@@ -52,3 +52,36 @@ The `search` function will return all the BodyParts that match a specific search
 index = BodyPartIndex(json_filename='body_parts.json')
 bodyPart = index.search('adnexa')
 ```
+
+# `BodyPart` (Scenarios)
+
+## What can you get from a `BodyPart`?
+
+```python
+index = BodyPartIndex(json_filename='body_parts.json')
+bodyPart = index.get('RID294')
+bodyPart.description    # "uterine adnexa"
+bodyPart.sex_specific   # "Female"
+bodyPart.synonyms       # ["adnexa"]
+bodyPart.contained_by   # BodyPart(radlex_id='RID2507', description='pelvis', ...)
+bodyPart.part_of        # BodyPart(radlex_id='RID270', description='female genital system', ...)
+bodyPart.codes          # [ Code(system='SNOMED', 'code=''), Code(...), Code(...) ]
+```
+
+## How to deal with sided body parts?
+
+For cases where the body part is sided, the index contains three versions: an unsided version, a left-sided version, 
+and a right-sided version. All of these are aware of each other.
+
+```python
+index = BodyPartIndex(json_filename='body_parts.json')
+bodyPart = index.get('RID294') # uterine adnexa (side not specified)
+# From the unsided version, get the right- and left-sided versions
+right = bodyPart.right     # BodyPart(radlex_id='RID294_RID5825', description='right uterine adnexa', ...)
+left  = bodyPart.left      # BodyPart(radlex_id='RID294_RID5824', description='left uterine adnexa', ...)
+# From either sided versions, can get back to the unsided or to the other side
+right.unsided == body_part # true
+left.right    == right     # true
+```
+
+## How to determine if one body part is contained by another?

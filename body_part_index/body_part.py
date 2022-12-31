@@ -13,7 +13,7 @@ class Code(NamedTuple):
     """A Code is a tuple of (sysem, code)."""
     system: str
     code: str
-    
+
     @staticmethod
     def from_dict(code_dict: Dict) -> "Code":
         """Generate a Code from a dict with "system" and "code" keys."""
@@ -52,15 +52,15 @@ class BodyPartData:
 
     def __str__(self) -> str:
         return f"{self.radlex_id}: {self.description}"
-    
+
     @staticmethod
     def params_from_json_dict(body_part_dict: Dict) -> Tuple[List[str], Dict[str, any]]:
         """Generate arguments for BodyPartData constructor from a JSON dict.
-            
+
             Args:
                 body_part_dict (Dict): JSON dict with keys "radlex_id", "description", "contained_by_id",
                     "codes", "synonyms", "unsided_id", "left_id", "right_id", "part_of_id", and "sex_specific".
-            
+
             Returns:
                 (args, kwargs) (tupel of List and Dict): arguments and keyword-arguments for the BodyPartData
                     constructor.
@@ -87,9 +87,9 @@ class BodyPartData:
 
 class Index(Protocol):
     """Signature of an object that can be used by BodyPart to find its related objects."""
-    def get_by_id(self, radlex_id: str) -> 'BodyPart': ...
+    def get_by_id(self, radlex_id: str) -> 'BodyPart': ... # pylint: disable=missing-function-docstring
 
-    def get_all_body_parts(self) -> Iterable['BodyPart']: ...
+    def get_all_body_parts(self) -> Iterable['BodyPart']: ...# pylint: disable=missing-function-docstring
 
 class BodyPart(BodyPartData):
     """ "Body part object representing a node in the anatomic location hierarchy."""
@@ -146,6 +146,11 @@ class BodyPart(BodyPartData):
     def right(self) -> Optional['BodyPart']:
         """BodyPart: Right-sided version of the concept"""
         return self._index.get_by_id(self.right_id) if self.right_id is not None else None
+
+    @cached_property
+    def unsided(self) -> Optional['BodyPart']:
+        """BodyPart: Unisided version of the concept"""
+        return self._index.get_by_id(self.unsided_id) if self.unsided_id is not None else None
 
     @cached_property
     def children(self) -> Set['BodyPart']:
