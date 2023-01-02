@@ -1,6 +1,6 @@
 # pylint: disable=missing-module-docstring
 from typing import Set
-from body_part_index import __version__, BodyPartIndex, BodyPart, WHOLE_BODY_ID
+from body_part_index import __version__, BodyPartIndex, BodyPart, Code, WHOLE_BODY_ID
 from . import ABDOMEN_ID, PELVIS_ID, UTERINE_ADNEXA_ID, LEFT_UTERINE_ADNEXA_ID, RIGHT_UTERINE_ADNEXA_ID, \
     FEMALE_GENITAL_SYSTEM_ID # pylint: disable=no-name-in-module
 
@@ -50,6 +50,8 @@ def test_get_by_id(sample_body_part_index: BodyPartIndex):
     assert body_part.radlex_id == WHOLE_BODY_ID
     assert body_part.description == 'whole body'
 
+ABDOMEN_SNOMED_CODE = '818983003'
+SNOMED_SYSTEM = "SNOMED"
 
 # Test the BodyPartIndex get() method that looks across all the IDs and code values
 def test_get(sample_body_part_index: BodyPartIndex):
@@ -59,11 +61,18 @@ def test_get(sample_body_part_index: BodyPartIndex):
     assert body_part.radlex_id == PELVIS_ID
     assert body_part.description == 'pelvis'
 
-    body_part = sample_body_part_index.get('818983003')
+    body_part = sample_body_part_index.get(ABDOMEN_SNOMED_CODE)
     assert isinstance(body_part, BodyPart)
     assert body_part.radlex_id == ABDOMEN_ID
-    assert any(c.code == '818983003' for c in body_part.codes)
+    assert any(c.code == ABDOMEN_SNOMED_CODE for c in body_part.codes)
 
+# Test the BodyPartIndex get_by_code() method that looks at the code values
+def test_get_by_code(sample_body_part_index: BodyPartIndex):
+    """Make sure we can get a BodyPart by code value."""
+    body_part: BodyPart = sample_body_part_index.get_by_code(Code(SNOMED_SYSTEM, ABDOMEN_SNOMED_CODE))
+    assert isinstance(body_part, BodyPart)
+    assert body_part.radlex_id == ABDOMEN_ID
+    assert body_part.description == 'abdomen'
 
 # Test the BodyPartIndex search() method that looks at the description and synonyms
 def test_search(sample_body_part_index: BodyPartIndex):

@@ -44,6 +44,13 @@ bodyPart2 = index.get('265256') # FMA code
 
 The function returns a `BodyPart` object.
 
+## How to get a particular body part by system/code?
+
+```python
+from index import BodyPartIndex, BodyPart, Code
+body_part: BodyPart = index.get_by_code(Code('SNOMED', ''))
+```
+
 ## How to search for body parts based on names or synonyms?
 
 The `search` function will return all the BodyParts that match a specific search value.
@@ -85,3 +92,4 @@ left.right    == right     # true
 ```
 
 ## How to determine if one body part is contained by another?
+
