@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Dict, NamedTuple, Optional, Set, Iterable, Protocol, List, Tuple
+from typing import Any, Dict, NamedTuple, Optional, Set, Iterable, Protocol, List, Tuple
 
 WHOLE_BODY_ID = "RID39569"
 SEXES = ("Female", "Male")
@@ -43,7 +43,7 @@ class BodyPartData:
     description: str = field(hash=False, compare=False)
     contained_by_id: str = field(hash=False, compare=False)
     codes: Optional[Iterable[Code]] = field(default=None, hash=False, compare=False)
-    synonyms: Optional[Iterable[str]] = field(default=None, hash=False, compare=False)
+    synonyms: Optional[List[str]] = field(default=None, hash=False, compare=False)
     unsided_id: Optional[str] = field(default=None, hash=False, compare=False)
     left_id: Optional[str] = field(default=None, hash=False, compare=False)
     right_id: Optional[str] = field(default=None, hash=False, compare=False)
@@ -54,7 +54,7 @@ class BodyPartData:
         return f"{self.radlex_id}: {self.description}"
 
     @staticmethod
-    def params_from_json_dict(body_part_dict: Dict) -> Tuple[List[str], Dict[str, any]]:
+    def params_from_json_dict(body_part_dict: Dict) -> Tuple[Iterable[str], Dict[str, Any]]:
         """Generate arguments for BodyPartData constructor from a JSON dict.
 
             Args:
@@ -65,11 +65,13 @@ class BodyPartData:
                 (args, kwargs) (tupel of List and Dict): arguments and keyword-arguments for the BodyPartData
                     constructor.
         """
-        args: List = (body_part_dict["radlexId"], body_part_dict["description"], body_part_dict["containedById"])
-        kwargs: Dict[str, any] = {}
+        args: Iterable = (body_part_dict["radlexId"], body_part_dict["description"], body_part_dict["containedById"])
+        kwargs: Dict[str, Any] = {}
         code_dicts = body_part_dict.get("codes", None)
         if code_dicts is not None:
             kwargs["codes"] = [Code(**code_dict) for code_dict in code_dicts]
+        else:
+            kwargs["codes"] = []
         synonyms = body_part_dict.get("synonyms", None)
         if synonyms is not None and len(synonyms) > 0:
             kwargs["synonyms"] = synonyms

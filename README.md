@@ -21,11 +21,15 @@ To open the library, you first need to import it into your project. Then, you ca
 import requests, json
 from body_part_index import BodyPartIndex, BodyPart, BODY_PART_INDEX_DATA_URL
 
-# Import data from the standard URL
-if (r := requests.get(BODY_PART_INDEX_DATA_URL)).status_code == reqeusts.codes.ok:
+# Import data distributed with the package
+index = BodyPartIndex()
+
+
+# OR import data from the latest version on the web
+if (r := requests.get(BODY_PART_INDEX_DATA_URL)).status_code == requests.codes.ok:
     index = BodyPartIndex(json_data=json.loads(r.text))
 
-# Open a local data file
+# OR Open a local data file
 index = BodyPartIndex(json_filename='body_parts.json')
 ```
 
@@ -47,8 +51,8 @@ The function returns a `BodyPart` object.
 ## How to get a particular body part by system/code?
 
 ```python
-from index import BodyPartIndex, BodyPart, Code
-body_part: BodyPart = index.get_by_code(Code('SNOMED', ''))
+index = BodyPartIndex(json_filename='body_parts.json')
+body_part: BodyPart = index.get_by_code(Code('SNOMED', '818983003'))
 ```
 
 ## How to search for body parts based on names or synonyms?
@@ -87,9 +91,9 @@ bodyPart = index.get('RID294') # uterine adnexa (side not specified)
 right = bodyPart.right     # BodyPart(radlex_id='RID294_RID5825', description='right uterine adnexa', ...)
 left  = bodyPart.left      # BodyPart(radlex_id='RID294_RID5824', description='left uterine adnexa', ...)
 # From either sided versions, can get back to the unsided or to the other side
-right.unsided == body_part # true
-left.right    == right     # true
+right.unsided == body_part # True
+left.right    == right     # True
 ```
-
 ## How to determine if one body part is contained by another?
 
+## How to get the contained children of a body part?
