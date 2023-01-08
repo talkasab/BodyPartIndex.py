@@ -28,9 +28,7 @@ def test_insufficient_arguments():
     """Make sure we get an error if we don't provide enough arguments."""
     with pytest.raises(TypeError):
         # pylint: disable=no-value-for-parameter
-        _: BodyPartData = BodyPartData(
-            PELVIS_ID, 'pelvis'
-        )
+        _: BodyPartData = BodyPartData(PELVIS_ID, 'pelvis')
         # pylint: enable=no-value-for-parameter
 
 
@@ -102,3 +100,27 @@ def test_sidedness(sample_body_part_index: BodyPartIndex):
     assert right.left == left
     assert right.right is None
     assert right.unsided == unsided
+
+
+def test_children(sample_body_part_index: BodyPartIndex):
+    """Make sure we can get the BodyParts that are contained by another BodyPart."""
+    body_part = sample_body_part_index.get_by_id(WHOLE_BODY_ID)
+    expected = {
+        sample_body_part_index.get_by_id(ABDOMEN_ID),
+        sample_body_part_index.get_by_id(PELVIS_ID),
+    }
+    assert body_part.children == expected
+
+
+def test_descendants(sample_body_part_index: BodyPartIndex):
+    """Make sure we can get the all the BodyParts that are contained by another BodyPart."""
+    body_part = sample_body_part_index.get_by_id(WHOLE_BODY_ID)
+    expected = {
+        sample_body_part_index.get_by_id(ABDOMEN_ID),
+        sample_body_part_index.get_by_id(PELVIS_ID),
+        sample_body_part_index.get_by_id(UTERINE_ADNEXA_ID),
+        sample_body_part_index.get_by_id(LEFT_UTERINE_ADNEXA_ID),
+        sample_body_part_index.get_by_id(RIGHT_UTERINE_ADNEXA_ID),
+        sample_body_part_index.get_by_id(FEMALE_GENITAL_SYSTEM_ID)
+    }
+    assert body_part.descendants == expected

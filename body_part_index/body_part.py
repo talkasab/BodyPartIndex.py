@@ -4,20 +4,21 @@ from dataclasses import dataclass, field
 from functools import cached_property
 from typing import Any, Dict, NamedTuple, Optional, Set, Iterable, Protocol, List, Tuple
 
-WHOLE_BODY_ID = "RID39569"
-SEXES = ("Female", "Male")
+WHOLE_BODY_ID = 'RID39569'
+SEXES = ('Female', 'Male')
 INDEX_FUNCTIONS = ('get_by_id', 'get_all_body_parts')
 
 
 class Code(NamedTuple):
     """A Code is a tuple of (sysem, code)."""
+
     system: str
     code: str
 
     @staticmethod
-    def from_dict(code_dict: Dict) -> "Code":
+    def from_dict(code_dict: Dict) -> 'Code':
         """Generate a Code from a dict with "system" and "code" keys."""
-        return Code(code_dict["system"], code_dict["code"])
+        return Code(code_dict['system'], code_dict['code'])
 
 
 @dataclass(frozen=True)
@@ -39,6 +40,7 @@ class BodyPartData:
         sex_specific (str, optional): Indicates whether the concept is associated with a sex phenotype.
 
     """
+
     radlex_id: str
     description: str = field(hash=False, compare=False)
     contained_by_id: str = field(hash=False, compare=False)
@@ -51,55 +53,76 @@ class BodyPartData:
     sex_specific: Optional[str] = field(default=None, hash=False, compare=False)
 
     def __str__(self) -> str:
-        return f"{self.radlex_id}: {self.description}"
+        return f'{self.radlex_id}: {self.description}'
 
     @staticmethod
     def params_from_json_dict(body_part_dict: Dict) -> Tuple[Iterable[str], Dict[str, Any]]:
         """Generate arguments for BodyPartData constructor from a JSON dict.
 
-            Args:
-                body_part_dict (Dict): JSON dict with keys "radlex_id", "description", "contained_by_id",
-                    "codes", "synonyms", "unsided_id", "left_id", "right_id", "part_of_id", and "sex_specific".
+        Args:
+            body_part_dict (Dict): JSON dict with keys "radlex_id", "description", "contained_by_id",
+                "codes", "synonyms", "unsided_id", "left_id", "right_id", "part_of_id", and "sex_specific".
 
-            Returns:
-                (args, kwargs) (tupel of List and Dict): arguments and keyword-arguments for the BodyPartData
-                    constructor.
+        Returns:
+            (args, kwargs) (tupel of List and Dict): arguments and keyword-arguments for the BodyPartData
+                constructor.
         """
-        args: Iterable = (body_part_dict["radlexId"], body_part_dict["description"], body_part_dict["containedById"])
+        args: Iterable = (
+            body_part_dict['radlexId'],
+            body_part_dict['description'],
+            body_part_dict['containedById'],
+        )
         kwargs: Dict[str, Any] = {}
-        code_dicts = body_part_dict.get("codes", None)
+        code_dicts = body_part_dict.get('codes', None)
         if code_dicts is not None:
-            kwargs["codes"] = [Code(**code_dict) for code_dict in code_dicts]
+            kwargs['codes'] = [Code(**code_dict) for code_dict in code_dicts]
         else:
-            kwargs["codes"] = []
-        synonyms = body_part_dict.get("synonyms", None)
+            kwargs['codes'] = []
+        synonyms = body_part_dict.get('synonyms', None)
         if synonyms is not None and len(synonyms) > 0:
-            kwargs["synonyms"] = synonyms
-        if "unsidedId" in body_part_dict:
-            kwargs["unsided_id"] = body_part_dict["unsidedId"]
-        if "leftId" in body_part_dict:
-            kwargs["left_id"] = body_part_dict["leftId"]
-        if "rightId" in body_part_dict:
-            kwargs["right_id"] = body_part_dict["rightId"]
-        if "partOfId" in body_part_dict:
-            kwargs["part_of_id"] = body_part_dict["partOfId"]
-        if "sexSpecific" in body_part_dict:
-            kwargs["sex_specific"] = body_part_dict["sexSpecific"]
+            kwargs['synonyms'] = synonyms
+        if 'unsidedId' in body_part_dict:
+            kwargs['unsided_id'] = body_part_dict['unsidedId']
+        if 'leftId' in body_part_dict:
+            kwargs['left_id'] = body_part_dict['leftId']
+        if 'rightId' in body_part_dict:
+            kwargs['right_id'] = body_part_dict['rightId']
+        if 'partOfId' in body_part_dict:
+            kwargs['part_of_id'] = body_part_dict['partOfId']
+        if 'sexSpecific' in body_part_dict:
+            kwargs['sex_specific'] = body_part_dict['sexSpecific']
         return (args, kwargs)
+
 
 class Index(Protocol):
     """Signature of an object that can be used by BodyPart to find its related objects."""
-    def get_by_id(self, radlex_id: str) -> 'BodyPart': ... # pylint: disable=missing-function-docstring
 
-    def get_all_body_parts(self) -> Iterable['BodyPart']: ...# pylint: disable=missing-function-docstring
+    # pylint: disable=missing-function-docstring
+    def get_by_id(self, radlex_id: str) -> 'BodyPart':
+        ...
+
+    def get_all_body_parts(self) -> Iterable['BodyPart']:
+        ...
+    # pylint: enable=missing-function-docstring
 
 class BodyPart(BodyPartData):
     """ "Body part object representing a node in the anatomic location hierarchy."""
 
-    def __init__(self, index: Index, radlex_id: str, description: str, contained_by_id: str, /,
-                 codes: Optional[Iterable[Code]] = None, synonyms: Optional[Iterable[str]] = None,
-                 unsided_id: Optional[str] = None, left_id: Optional[str] = None, right_id: Optional[str] = None,
-                 part_of_id: Optional[str]=None, sex_specific: str = None) -> None:
+    def __init__(
+        self,
+        index: Index,
+        radlex_id: str,
+        description: str,
+        contained_by_id: str,
+        /,
+        codes: Optional[Iterable[Code]] = None,
+        synonyms: Optional[Iterable[str]] = None,
+        unsided_id: Optional[str] = None,
+        left_id: Optional[str] = None,
+        right_id: Optional[str] = None,
+        part_of_id: Optional[str] = None,
+        sex_specific: str = None,
+    ) -> None:
         """Initialize a BodyPart object, representing an anatomic location, with associated information.
 
         Args:
@@ -121,12 +144,23 @@ class BodyPart(BodyPartData):
             Exception: When one of the arguments is inappropriate
         """
         # Mandatory arguments
-        super().__init__(radlex_id=radlex_id, description=description, contained_by_id=contained_by_id, codes=codes,
-                         synonyms=synonyms, unsided_id=unsided_id, left_id=left_id, right_id=right_id,
-                         part_of_id=part_of_id, sex_specific=sex_specific)
+        super().__init__(
+            radlex_id=radlex_id,
+            description=description,
+            contained_by_id=contained_by_id,
+            codes=codes,
+            synonyms=synonyms,
+            unsided_id=unsided_id,
+            left_id=left_id,
+            right_id=right_id,
+            part_of_id=part_of_id,
+            sex_specific=sex_specific,
+        )
         for method in INDEX_FUNCTIONS:
             if not callable(getattr(index, method, None)):
-                raise ValueError(f"index must be a BodyPartIndex or at least implement {method}() (got {index})")
+                raise ValueError(
+                    f'index must be a BodyPartIndex or at least implement {method}() (got {index})'
+                )
         self._index: Index = index
 
     @cached_property
@@ -183,4 +217,4 @@ class BodyPart(BodyPartData):
         Returns:
             bool: True if other is a parent of this one, False otherwise
         """
-        return other.contained_by_id == self.radlex_id  # pylint: disable=protected-access
+        return other.radlex_id != self.radlex_id and other.contained_by_id == self.radlex_id  # pylint: disable=protected-access

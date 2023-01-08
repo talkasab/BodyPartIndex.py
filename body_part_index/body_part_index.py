@@ -73,7 +73,7 @@ class BodyPartIndex:
             if code in self.__code_index:
                 log = logging.getLogger('body_part_index')
                 log.warning(
-                    'WARN: Duplicate BodyParts (%s, %s) with code %s',
+                    'Duplicate BodyParts (%s, %s) with code %s',
                     body_part,
                     self.__code_index[code],
                     code,
@@ -83,7 +83,7 @@ class BodyPartIndex:
                 if code.code in self.__code_text_index:
                     log = logging.getLogger('body_part_index')
                     log.warning(
-                        'WARN: Duplicate BodyParts (%s, %s) with code text %s',
+                        'Duplicate BodyParts (%s, %s) with code text %s',
                         body_part,
                         self.__code_text_index[code.code],
                         code.code,
