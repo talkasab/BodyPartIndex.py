@@ -96,4 +96,13 @@ left.right    == right     # True
 ```
 ## How to determine if one body part is contained by another?
 
+To determine if a one body part is contained by another, use the `is_contained` function.
+
+```python
+index = BodyPartIndex(json_filename='body_parts.json')
+bodyPart1 = index.get('RID294') # uterine adnexa (side not specified)
+bodyPart2 = index.get('RID39569') # whole body
+is_contained = bodyPart1.is_contained(bodyPart2)
+```
+
 ## How to get the contained children of a body part?

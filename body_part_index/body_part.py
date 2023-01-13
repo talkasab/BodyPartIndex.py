@@ -218,3 +218,19 @@ class BodyPart(BodyPartData):
             bool: True if other is a parent of this one, False otherwise
         """
         return other.radlex_id != self.radlex_id and other.contained_by_id == self.radlex_id  # pylint: disable=protected-access
+
+    def is_contained(self, other: 'BodyPart') -> bool:
+        """Check if this BodyPart is contained by other BodyPart.
+        
+        Args:
+            other (BodyPart): BodyPart to check against
+
+        Returns:
+            bool: True if other among all containing BodyParts, False otherwise
+        """
+
+        if other in self.ancestors:
+            return True
+        else:
+            return False
+        
