@@ -124,3 +124,14 @@ def test_descendants(sample_body_part_index: BodyPartIndex):
         sample_body_part_index.get_by_id(FEMALE_GENITAL_SYSTEM_ID)
     }
     assert body_part.descendants == expected
+
+def test_is_contained(sample_body_part_index: BodyPartIndex):
+    """Ensure True when other BodyPart is in this BodyPart's ancestry.
+        Ensure False when other BodyPart is not contained in this BodyPart's ancestry.
+    """ 
+    body_part1 = sample_body_part_index.get_by_id(ABDOMEN_ID)
+    body_part2 = sample_body_part_index.get_by_id(WHOLE_BODY_ID)
+    body_part3 = sample_body_part_index.get_by_id(RIGHT_UTERINE_ADNEXA_ID)
+
+    assert body_part1.is_contained(body_part2) == True
+    assert body_part1.is_contained(body_part3) == False
