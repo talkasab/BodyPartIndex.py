@@ -135,3 +135,19 @@ def test_is_contained(sample_body_part_index: BodyPartIndex):
 
     assert body_part1.is_contained(body_part2) == True
     assert body_part1.is_contained(body_part3) == False
+
+# returns empty array when no children
+
+# returns empty array when no contained ancestors
+
+# returns empty array when no contained ancestors
+
+# returns the correct result (has valid ancestor with radlexId
+
+# returns the correct result (has valid ancestor with BodyPart)
+
+# returns the correct result (no valid ancestor)
+
+# BodyPart with partOf children
+
+# BodyPart with partOf ancestors
