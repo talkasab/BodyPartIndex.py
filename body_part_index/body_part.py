@@ -2,12 +2,12 @@
 
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Any, Dict, NamedTuple, Optional, Set, Iterable, Protocol, List, Tuple
+from typing import Any, Collection, Dict, NamedTuple, Optional, Set, Iterable, Protocol, List, Tuple
 
 WHOLE_BODY_ID = 'RID39569'
 SEXES = ('Female', 'Male')
 INDEX_FUNCTIONS = ('get_by_id', 'get_all_body_parts')
-
+EMPTY_FROZEN_SET = frozenset()
 
 class Code(NamedTuple):
     """A Code is a tuple of (sysem, code)."""
@@ -44,8 +44,9 @@ class BodyPartData:
     radlex_id: str
     description: str = field(hash=False, compare=False)
     contained_by_id: str = field(hash=False, compare=False)
-    codes: Optional[Iterable[Code]] = field(default=None, hash=False, compare=False)
-    synonyms: Optional[List[str]] = field(default=None, hash=False, compare=False)
+    # codes: Collection[Code] = field(default=lambda: EMPTY_FROZEN_SET, hash=False, compare=False)
+    codes: Collection[Code] = field(default=EMPTY_FROZEN_SET, hash=False, compare=False)
+    synonyms: Collection[Code] = field(default=lambda: EMPTY_FROZEN_SET, hash=False, compare=False)
     unsided_id: Optional[str] = field(default=None, hash=False, compare=False)
     left_id: Optional[str] = field(default=None, hash=False, compare=False)
     right_id: Optional[str] = field(default=None, hash=False, compare=False)
@@ -75,12 +76,10 @@ class BodyPartData:
         kwargs: Dict[str, Any] = {}
         code_dicts = body_part_dict.get('codes', None)
         if code_dicts is not None:
-            kwargs['codes'] = [Code(**code_dict) for code_dict in code_dicts]
-        else:
-            kwargs['codes'] = []
+            kwargs['codes'] = frozenset({ Code(**code_dict) for code_dict in code_dicts })
         synonyms = body_part_dict.get('synonyms', None)
         if synonyms is not None and len(synonyms) > 0:
-            kwargs['synonyms'] = synonyms
+            kwargs['synonyms'] = frozenset(synonyms)
         if 'unsidedId' in body_part_dict:
             kwargs['unsided_id'] = body_part_dict['unsidedId']
         if 'leftId' in body_part_dict:
@@ -103,7 +102,9 @@ class Index(Protocol):
 
     def get_all_body_parts(self) -> Iterable['BodyPart']:
         ...
+
     # pylint: enable=missing-function-docstring
+
 
 class BodyPart(BodyPartData):
     """ "Body part object representing a node in the anatomic location hierarchy."""
@@ -115,13 +116,13 @@ class BodyPart(BodyPartData):
         description: str,
         contained_by_id: str,
         /,
-        codes: Optional[Iterable[Code]] = None,
-        synonyms: Optional[Iterable[str]] = None,
+        codes: Collection[Code] = EMPTY_FROZEN_SET,
+        synonyms: Collection[str] = EMPTY_FROZEN_SET,
         unsided_id: Optional[str] = None,
         left_id: Optional[str] = None,
         right_id: Optional[str] = None,
         part_of_id: Optional[str] = None,
-        sex_specific: str = None,
+        sex_specific: Optional[str] = None,
     ) -> None:
         """Initialize a BodyPart object, representing an anatomic location, with associated information.
 
@@ -131,9 +132,9 @@ class BodyPart(BodyPartData):
             contained_by_id (str): Parent object in the anatomic location hierarchy
             index (BodyPartIndex-like): Typically a BodyPartIndex, but can be anything that offers "get_by_id" and
                    "get_all_body_parts" methods.
-            codes (Iterable[Code], optional): List of codes for the concept, where each
+            codes (Collection[Code], optional): List of codes for the concept, where each
                    element is a dict like {"system": "SNOMED", "code": "xxxxxx"}. Defaults to None.
-            synonyms (Iterable[str], optional): List of synonyms for the concept. Defaults to None.
+            synonyms (Collection[str], optional): List of synonyms for the concept. Defaults to None.
             unsided_id (str, optional): Identifier for the unsided version of the concept. Defaults to None.
             left_id (str, optional): Identifier for the left-sided version of the concept. Defaults to None.
             right_id (str, optional): Identifier for the right-sided version of the concept. Defaults to None.
@@ -217,4 +218,6 @@ class BodyPart(BodyPartData):
         Returns:
             bool: True if other is a parent of this one, False otherwise
         """
-        return other.radlex_id != self.radlex_id and other.contained_by_id == self.radlex_id  # pylint: disable=protected-access
+        return (
+            other.radlex_id != self.radlex_id and other.contained_by_id == self.radlex_id
+        )  # pylint: disable=protected-access

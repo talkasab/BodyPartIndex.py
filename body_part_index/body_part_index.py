@@ -92,7 +92,7 @@ class BodyPartIndex:
         # Harvest text for text indices
         add_to_text_index(body_part.radlex_id, body_part)
         add_to_text_index(body_part.description, body_part)
-        if body_part.synonyms and len(body_part.synonyms) > 0:
+        if body_part.synonyms is not None:
             for synonym in body_part.synonyms:
                 add_to_text_index(synonym, body_part)
         for code in body_part.codes:
@@ -105,12 +105,12 @@ class BodyPartIndex:
         self.__text_index: Dict[str, List[BodyPart]] = {}
         for body_part_dict in json_data['bodyParts']:
             (args, kwargs) = BodyPartData.params_from_json_dict(body_part_dict)
-            body_part: BodyPart = BodyPart(self, *args, **kwargs)
+            body_part: BodyPart = BodyPart(self, *args, **kwargs) # type: ignore
             if id in self.__index:
                 raise Exception(f'Duplicate BodyPart with ID {id}')
             self.__index[body_part.radlex_id] = body_part
             self._add_to_indices(body_part)
-        # TODO: Sanity check for all references
+        # TODO: Sanity check for all references, especially left/right/unsided
         # TODO: Sanity check that all body parts have a parent leading to WHOLE_BODY_ID
 
     def get_all_body_parts(self) -> Iterable[BodyPart]:

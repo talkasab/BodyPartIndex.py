@@ -121,6 +121,6 @@ def test_descendants(sample_body_part_index: BodyPartIndex):
         sample_body_part_index.get_by_id(UTERINE_ADNEXA_ID),
         sample_body_part_index.get_by_id(LEFT_UTERINE_ADNEXA_ID),
         sample_body_part_index.get_by_id(RIGHT_UTERINE_ADNEXA_ID),
-        sample_body_part_index.get_by_id(FEMALE_GENITAL_SYSTEM_ID)
+        sample_body_part_index.get_by_id(FEMALE_GENITAL_SYSTEM_ID),
     }
     assert body_part.descendants == expected
