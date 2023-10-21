@@ -236,8 +236,7 @@ class BodyPart(BodyPartData):
     
     @property
     def snomed_code(self) -> Optional[str]:
-        """
-        Return the most appropriate SNOMED code for the body part.
+        """Return the most appropriate SNOMED code for the body part.
 
         Priority:
         1. Directly assigned code
@@ -248,23 +247,19 @@ class BodyPart(BodyPartData):
             Optional[str]: SNOMED code or None if not available
         """
         if self.codes:
-            snomed_codes = [code.code for code in self.codes if code.system == "SNOMED"]
-            if snomed_codes:
-                return snomed_codes[0]
-
-        if self.unsided_id and self.unsided_id in self._index:
+            for code in self.codes:
+                if code.system == 'SNOMED':
+                    return code.code
+        if self.unsided_id:
             unsided_body_part = self._index.get_by_id(self.unsided_id)
-            if unsided_body_part.codes:
-                snomed_codes = [code.code for code in unsided_body_part.codes if code.system == "SNOMED"]
-                if snomed_codes:
-                    return snomed_codes[0]
-
-        if self.contained_by_id in self._index:
+            if unsided_body_part:
+                for code in unsided_body_part.codes:
+                    if code.system == 'SNOMED':
+                        return code.code
+        if self.contained_by_id != self.radlex_id:
             parent_body_part = self._index.get_by_id(self.contained_by_id)
-            if parent_body_part.codes:
-                snomed_codes = [code.code for code in parent_body_part.codes if code.system == "SNOMED"]
-                if snomed_codes:
-                    return snomed_codes[0]
-
+            if parent_body_part:
+                for code in parent_body_part.codes:
+                    if code.system == 'SNOMED':
+                        return code.code
         return None
-   
