@@ -10,6 +10,8 @@ from . import (
     LEFT_UTERINE_ADNEXA_ID,
     RIGHT_UTERINE_ADNEXA_ID,
     FEMALE_GENITAL_SYSTEM_ID,
+    NIPPLE_OF_MALE_BREAST_ID,
+    AREOLA_OF_MALE_BREAST_ID, 
 )
 
 # pylint: enable=no-name-in-module
@@ -25,7 +27,7 @@ def test_initialize_with_filename(sample_json_data_filename: str):
     if BodyPartIndex.is_initialized():
         BodyPartIndex.reset_instance()
     bpi: BodyPartIndex = BodyPartIndex(json_filename=sample_json_data_filename)
-    assert len(bpi.get_all_body_parts()) == 7
+    assert len(bpi.get_all_body_parts()) == 9
 
 
 def test_initialize_with_data(sample_json_data: dict):
@@ -33,7 +35,7 @@ def test_initialize_with_data(sample_json_data: dict):
     if BodyPartIndex.is_initialized():
         BodyPartIndex.reset_instance()
     bpi: BodyPartIndex = BodyPartIndex(json_data=sample_json_data)
-    assert len(bpi.get_all_body_parts()) == 7
+    assert len(bpi.get_all_body_parts()) == 9
 
 
 def test_get_all_body_parts(sample_body_part_index: BodyPartIndex):
@@ -46,6 +48,8 @@ def test_get_all_body_parts(sample_body_part_index: BodyPartIndex):
         WHOLE_BODY_ID,
         ABDOMEN_ID,
         FEMALE_GENITAL_SYSTEM_ID,
+        NIPPLE_OF_MALE_BREAST_ID,
+        AREOLA_OF_MALE_BREAST_ID,
     }
     actual_body_parts: Set[str] = {
         bp.radlex_id for bp in sample_body_part_index.get_all_body_parts()

@@ -130,6 +130,42 @@
             "code": "C0017422"
           }
         ]
+    },
+    {
+      "radlexId": "RID29914",
+      "description": "areola of male breast",
+      "containedById": "RID29898",
+      "leftId": "RID29916",
+      "rightId": "RID29915",
+      "sexSpecific": "Male",
+      "synonyms": [
+        "male areola"
+      ],
+      "codes": [
+        {
+          "system": "FMA",
+          "code": "223669"
+        }
+      ]
+    },
+    {
+      "radlexId": "RID29903",
+      "description": "nipple of male breast",
+      "containedById": "RID29914",
+      "leftId": "RID29905",
+      "rightId": "RID29904",
+      "sexSpecific": "Male",
+      "synonyms": [
+        "male nipple",
+        "Mamille der m√§nnlichen Brust",
+        "Mamille"
+      ],
+      "codes": [
+        {
+          "system": "FMA",
+          "code": "67772"
+        }
+      ]
     }
  ]
 }

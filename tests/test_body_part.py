@@ -135,3 +135,23 @@ def test_is_contained(sample_body_part_index: BodyPartIndex):
 
     assert body_part1.is_contained(body_part2) == True
     assert body_part1.is_contained(body_part3) == False
+
+def test_snomed_code_property_direct_assignment(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when SNOMED code is directly assigned."""
+    body_part = sample_body_part_index.get_by_id('RID294_RID5824')
+    assert body_part.snomed_code == '110635008'
+
+def test_snomed_code_property_unsided_version(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when SNOMED code is obtained from the unsided version."""
+    body_part = sample_body_part_index.get_by_id('RID294_RID5825')  # Right uterine adnexa
+    assert body_part.snomed_code == '110634007'
+
+def test_snomed_code_property_parent_body_part(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when SNOMED code is obtained from the parent body part."""
+    body_part = sample_body_part_index.get_by_id('RID56')  # Abdomen
+    assert body_part.snomed_code == '818983003'
+
+def test_snomed_code_property_no_snomed_code(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when no SNOMED code is available."""
+    body_part = sample_body_part_index.get_by_id('RID29903')  # nipple of male breast (has no SNOMED code)
+    assert body_part.snomed_code is None
