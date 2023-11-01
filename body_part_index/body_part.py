@@ -233,4 +233,29 @@ class BodyPart(BodyPartData):
             return True
         else:
             return False
-        
+    
+    @cached_property
+    def snomed_code(self) -> Optional[str]:
+        """Return the most appropriate SNOMED code for the body part.
+
+        Priority:
+        1. Directly assigned code
+        2. Code from the unsided version
+        3. Code from the immediate parent
+
+        Returns:
+            Optional[str]: SNOMED code or None if not available
+        """
+        if self.codes:
+            for code in self.codes:
+                if code.system == 'SNOMED':
+                    return code.code
+        if self.unsided:
+            for code in self.unsided.codes:
+                if code.system == 'SNOMED':
+                    return code.code
+        if self.contained_by and self.contained_by != self:
+            for code in self.contained_by.codes:
+                if code.system == 'SNOMED':
+                    return code.code
+        return None

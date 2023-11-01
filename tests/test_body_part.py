@@ -11,6 +11,10 @@ from . import (
     LEFT_UTERINE_ADNEXA_ID,
     RIGHT_UTERINE_ADNEXA_ID,
     FEMALE_GENITAL_SYSTEM_ID,
+    NIPPLE_OF_MALE_BREAST_ID,
+    AREOLA_OF_MALE_BREAST_ID,
+    OVARIAN_ARTERY_ID,
+    RIGHT_OVARIAN_ARTERY_ID,
 )
 
 # pylint: enable=no-name-in-module
@@ -121,7 +125,9 @@ def test_descendants(sample_body_part_index: BodyPartIndex):
         sample_body_part_index.get_by_id(UTERINE_ADNEXA_ID),
         sample_body_part_index.get_by_id(LEFT_UTERINE_ADNEXA_ID),
         sample_body_part_index.get_by_id(RIGHT_UTERINE_ADNEXA_ID),
-        sample_body_part_index.get_by_id(FEMALE_GENITAL_SYSTEM_ID)
+        sample_body_part_index.get_by_id(FEMALE_GENITAL_SYSTEM_ID),
+        sample_body_part_index.get_by_id(OVARIAN_ARTERY_ID),
+        sample_body_part_index.get_by_id(RIGHT_OVARIAN_ARTERY_ID)
     }
     assert body_part.descendants == expected
 
@@ -135,3 +141,23 @@ def test_is_contained(sample_body_part_index: BodyPartIndex):
 
     assert body_part1.is_contained(body_part2) == True
     assert body_part1.is_contained(body_part3) == False
+
+def test_snomed_code_direct_assignment(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when SNOMED code is directly assigned."""
+    body_part = sample_body_part_index.get_by_id(RIGHT_UTERINE_ADNEXA_ID)
+    assert body_part.snomed_code == '110634007'
+
+def test_snomed_code_unsided_version(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when SNOMED code is obtained from the unsided version."""
+    body_part = sample_body_part_index.get_by_id(RIGHT_OVARIAN_ARTERY_ID)  
+    assert body_part.snomed_code == '12052000'
+
+def test_snomed_code_immediate_parent(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when SNOMED code is obtained from the immediate parent."""
+    body_part = sample_body_part_index.get_by_id(AREOLA_OF_MALE_BREAST_ID)  
+    assert body_part.snomed_code == '67770001'
+
+def test_no_snomed_code(sample_body_part_index: BodyPartIndex):
+    """Test snomed_code property when no SNOMED code is available."""
+    body_part = sample_body_part_index.get_by_id(NIPPLE_OF_MALE_BREAST_ID)
+    assert body_part.snomed_code is None

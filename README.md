@@ -106,3 +106,15 @@ is_contained = bodyPart1.is_contained(bodyPart2)
 ```
 
 ## How to get the contained children of a body part?
+
+## How to use the `snomed_code` property?
+
+The  `BodyPart` class provides a property called `snomed_code` that returns the most appropriate SNOMED code for the body part. Here's how you can use it:
+
+```python
+index = BodyPartIndex(json_filename='body_parts.json')
+bodyPart = index.get('RID294_RID5824') # Left uterine adnexa
+snomed_code = bodyPart.snomed_code
+```
+In this example, the `snomed_code` property returns the SNOMED code for the left uterine adnexa.
+If the code is not directly assigned, it looks for the code in the unsided version and then the immediate parent body part. If no code is found, it returns None.
