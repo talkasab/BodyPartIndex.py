@@ -2,16 +2,20 @@
     "editor.tabSize": 4,
     "editor.detectIndentation": false,
     "editor.insertSpaces": true,
-	"editor.fontSize": 13,
-	"terminal.integrated.fontSize": 13,
     "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+        "source.fixAll.eslint": "explicit"
     },
 	"files.eol": "\n",
-    "python.linting.pylintEnabled": false,
-    "python.linting.pylintArgs": ["--max-line-length=120", "--disable=C0301"],
-	"python.linting.flake8Enabled": true,
-    "python.linting.enabled": false,
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "always",
+            "source.organizeImports": "always"
+        }
+    },
+    "python.analysis.autoImportCompletions": true,
     "python.testing.pytestArgs": [
         "tests"
     ],

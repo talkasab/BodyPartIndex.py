@@ -1,11 +1,12 @@
 # pylint: disable=missing-module-docstring
-import os
 import json
+import os
+
 import pytest
 
 from body_part_index.body_part_index import BodyPartIndex
 
-SAMPLE_BODYPARTS_FILENAME = 'sample_body_parts.json'
+SAMPLE_BODYPARTS_FILENAME = "sample_body_parts.json"
 
 
 def get_filename_in_tests_dir(filename: str) -> str:
@@ -22,7 +23,7 @@ def sample_json_data_filename() -> str:
 @pytest.fixture
 def sample_json_data():
     """Returns the sample json data for the tests."""
-    with open(get_filename_in_tests_dir(SAMPLE_BODYPARTS_FILENAME), encoding='utf-8') as json_file:
+    with open(get_filename_in_tests_dir(SAMPLE_BODYPARTS_FILENAME), encoding="utf-8") as json_file:
         return json.load(json_file)
 
 

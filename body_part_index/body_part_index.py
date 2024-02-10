@@ -1,12 +1,13 @@
 """Routines to pull in the information/hierarchy of BodyPart objects from the standard library."""
-import gc
-import json
-import importlib.resources
-import logging
-from typing import List, Dict, Set, Iterable, Optional
 
-from .body_part import BodyPartData
+import gc
+import importlib.resources
+import json
+import logging
+from typing import Dict, Iterable, List, Optional, Set
+
 from . import BodyPart, Code
+from .body_part import BodyPartData
 
 
 class BodyPartIndex:
@@ -16,35 +17,29 @@ class BodyPartIndex:
         Exception: If a second instance of this class is created (use get_instance() instead)
     """
 
-    __the_instance: Optional['BodyPartIndex'] = None
+    __the_instance: Optional["BodyPartIndex"] = None
 
     # TODO: Add ability to add local codes and synonyms
-    def __init__(
-        self, json_data: Optional[Dict] = None, json_filename: Optional[str] = None
-    ) -> None:
+    def __init__(self, json_data: Optional[Dict] = None, json_filename: Optional[str] = None) -> None:
         if BodyPartIndex.__the_instance is not None:
-            raise Exception(
-                'Singleton already initialized.  Use BodyPartIndex.get_instance() instead.'
-            )
+            raise Exception("Singleton already initialized.  Use BodyPartIndex.get_instance() instead.")
         if json_data is None:
             if json_filename is None:
-                json_data = json.load(
-                    importlib.resources.open_text('body_part_index.data', 'body_parts.json')
-                )
+                json_data = json.load(importlib.resources.open_text("body_part_index.data", "body_parts.json"))
             else:
                 json_data = self._get_json_data_from_file(json_filename)
         self._initialize(json_data)
         BodyPartIndex.__the_instance = self
 
     @staticmethod
-    def get_instance() -> 'BodyPartIndex':
+    def get_instance() -> "BodyPartIndex":
         """Get singleton instance of BodyPartIndex.
 
         Returns:
             BodyPartIndex: The singleton instance of BodyPartIndex
         """
         if BodyPartIndex.__the_instance is None:
-            raise Exception('Singleton not initialized.  Use BodyPartIndex() instead.')
+            raise Exception("Singleton not initialized.  Use BodyPartIndex() instead.")
         return BodyPartIndex.__the_instance
 
     @staticmethod
@@ -59,7 +54,7 @@ class BodyPartIndex:
         return BodyPartIndex.__the_instance is not None
 
     def _get_json_data_from_file(self, json_filename: str) -> Dict:
-        with open(json_filename, encoding='utf-8') as json_file:
+        with open(json_filename, encoding="utf-8") as json_file:
             return json.load(json_file)
 
     def _add_to_indices(self, body_part: BodyPart) -> None:
@@ -69,11 +64,14 @@ class BodyPartIndex:
             self.__text_index[text].append(body_part)
 
         # Harvest codes for code indices
+        if body_part.codes is None:
+            # Throw a RunTimeError exception, this isn't how it should be
+            raise RuntimeError("BodyPart has no codes")
         for code in body_part.codes:
             if code in self.__code_index:
-                log = logging.getLogger('body_part_index')
+                log = logging.getLogger("body_part_index")
                 log.warning(
-                    'Duplicate BodyParts (%s, %s) with code %s',
+                    "Duplicate BodyParts (%s, %s) with code %s",
                     body_part,
                     self.__code_index[code],
                     code,
@@ -81,9 +79,9 @@ class BodyPartIndex:
             else:
                 self.__code_index[code] = body_part
                 if code.code in self.__code_text_index:
-                    log = logging.getLogger('body_part_index')
+                    log = logging.getLogger("body_part_index")
                     log.warning(
-                        'Duplicate BodyParts (%s, %s) with code text %s',
+                        "Duplicate BodyParts (%s, %s) with code text %s",
                         body_part,
                         self.__code_text_index[code.code],
                         code.code,
@@ -103,11 +101,11 @@ class BodyPartIndex:
         self.__code_index: Dict[Code, BodyPart] = {}
         self.__code_text_index: Dict[str, BodyPart] = {}
         self.__text_index: Dict[str, List[BodyPart]] = {}
-        for body_part_dict in json_data['bodyParts']:
+        for body_part_dict in json_data["bodyParts"]:
             (args, kwargs) = BodyPartData.params_from_json_dict(body_part_dict)
-            body_part: BodyPart = BodyPart(self, *args, **kwargs)
+            body_part: BodyPart = BodyPart(self, *args, **kwargs)  # type: ignore
             if id in self.__index:
-                raise Exception(f'Duplicate BodyPart with ID {id}')
+                raise Exception(f"Duplicate BodyPart with ID {id}")
             self.__index[body_part.radlex_id] = body_part
             self._add_to_indices(body_part)
         # TODO: Sanity check for all references
@@ -134,7 +132,7 @@ class BodyPartIndex:
             BodyPart: BodyPart object with the given RadLex ID
         """
         if radlex_id not in self.__index:
-            raise Exception(f'No BodyPart with ID {radlex_id}')
+            raise Exception(f"No BodyPart with ID {radlex_id}")
         return self.__index[radlex_id]
 
     def get_by_code(self, code: Code) -> Optional[BodyPart]:

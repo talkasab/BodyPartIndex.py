@@ -2,11 +2,11 @@
 
 from dataclasses import dataclass, field
 from functools import cached_property
-from typing import Any, Dict, NamedTuple, Optional, Set, Iterable, Protocol, List, Tuple
+from typing import Any, Dict, Iterable, List, NamedTuple, Optional, Protocol, Set, Tuple
 
-WHOLE_BODY_ID = 'RID39569'
-SEXES = ('Female', 'Male')
-INDEX_FUNCTIONS = ('get_by_id', 'get_all_body_parts')
+WHOLE_BODY_ID = "RID39569"
+SEXES = ("Female", "Male")
+INDEX_FUNCTIONS = ("get_by_id", "get_all_body_parts")
 
 
 class Code(NamedTuple):
@@ -16,9 +16,9 @@ class Code(NamedTuple):
     code: str
 
     @staticmethod
-    def from_dict(code_dict: Dict) -> 'Code':
+    def from_dict(code_dict: Dict) -> "Code":
         """Generate a Code from a dict with "system" and "code" keys."""
-        return Code(code_dict['system'], code_dict['code'])
+        return Code(code_dict["system"], code_dict["code"])
 
 
 @dataclass(frozen=True)
@@ -53,7 +53,7 @@ class BodyPartData:
     sex_specific: Optional[str] = field(default=None, hash=False, compare=False)
 
     def __str__(self) -> str:
-        return f'{self.radlex_id}: {self.description}'
+        return f"{self.radlex_id}: {self.description}"
 
     @staticmethod
     def params_from_json_dict(body_part_dict: Dict) -> Tuple[Iterable[str], Dict[str, Any]]:
@@ -68,29 +68,29 @@ class BodyPartData:
                 constructor.
         """
         args: Iterable = (
-            body_part_dict['radlexId'],
-            body_part_dict['description'],
-            body_part_dict['containedById'],
+            body_part_dict["radlexId"],
+            body_part_dict["description"],
+            body_part_dict["containedById"],
         )
         kwargs: Dict[str, Any] = {}
-        code_dicts = body_part_dict.get('codes', None)
+        code_dicts = body_part_dict.get("codes")
         if code_dicts is not None:
-            kwargs['codes'] = [Code(**code_dict) for code_dict in code_dicts]
+            kwargs["codes"] = [Code(**code_dict) for code_dict in code_dicts]
         else:
-            kwargs['codes'] = []
-        synonyms = body_part_dict.get('synonyms', None)
+            kwargs["codes"] = []
+        synonyms = body_part_dict.get("synonyms")
         if synonyms is not None and len(synonyms) > 0:
-            kwargs['synonyms'] = synonyms
-        if 'unsidedId' in body_part_dict:
-            kwargs['unsided_id'] = body_part_dict['unsidedId']
-        if 'leftId' in body_part_dict:
-            kwargs['left_id'] = body_part_dict['leftId']
-        if 'rightId' in body_part_dict:
-            kwargs['right_id'] = body_part_dict['rightId']
-        if 'partOfId' in body_part_dict:
-            kwargs['part_of_id'] = body_part_dict['partOfId']
-        if 'sexSpecific' in body_part_dict:
-            kwargs['sex_specific'] = body_part_dict['sexSpecific']
+            kwargs["synonyms"] = synonyms
+        if "unsidedId" in body_part_dict:
+            kwargs["unsided_id"] = body_part_dict["unsidedId"]
+        if "leftId" in body_part_dict:
+            kwargs["left_id"] = body_part_dict["leftId"]
+        if "rightId" in body_part_dict:
+            kwargs["right_id"] = body_part_dict["rightId"]
+        if "partOfId" in body_part_dict:
+            kwargs["part_of_id"] = body_part_dict["partOfId"]
+        if "sexSpecific" in body_part_dict:
+            kwargs["sex_specific"] = body_part_dict["sexSpecific"]
         return (args, kwargs)
 
 
@@ -98,12 +98,12 @@ class Index(Protocol):
     """Signature of an object that can be used by BodyPart to find its related objects."""
 
     # pylint: disable=missing-function-docstring
-    def get_by_id(self, radlex_id: str) -> 'BodyPart':
-        ...
+    def get_by_id(self, radlex_id: str) -> "BodyPart": ...
 
-    def get_all_body_parts(self) -> Iterable['BodyPart']:
-        ...
+    def get_all_body_parts(self) -> Iterable["BodyPart"]: ...
+
     # pylint: enable=missing-function-docstring
+
 
 class BodyPart(BodyPartData):
     """ "Body part object representing a node in the anatomic location hierarchy."""
@@ -158,57 +158,55 @@ class BodyPart(BodyPartData):
         )
         for method in INDEX_FUNCTIONS:
             if not callable(getattr(index, method, None)):
-                raise ValueError(
-                    f'index must be a BodyPartIndex or at least implement {method}() (got {index})'
-                )
+                raise ValueError(f"index must be a BodyPartIndex or at least implement {method}() (got {index})")
         self._index: Index = index
 
     @cached_property
-    def contained_by(self) -> 'BodyPart':
+    def contained_by(self) -> "BodyPart":
         """BodyPart: Parent object in the anatomic location (contained by) hierarchy"""
         return self._index.get_by_id(self.contained_by_id)
 
     @cached_property
-    def part_of(self) -> Optional['BodyPart']:
+    def part_of(self) -> Optional["BodyPart"]:
         """BodyPart: Parent object in the part of hierarchy"""
         return self._index.get_by_id(self.part_of_id) if self.part_of_id is not None else None
 
     @cached_property
-    def left(self) -> Optional['BodyPart']:
+    def left(self) -> Optional["BodyPart"]:
         """BodyPart: Left-sided version of the concept"""
         return self._index.get_by_id(self.left_id) if self.left_id is not None else None
 
     @cached_property
-    def right(self) -> Optional['BodyPart']:
+    def right(self) -> Optional["BodyPart"]:
         """BodyPart: Right-sided version of the concept"""
         return self._index.get_by_id(self.right_id) if self.right_id is not None else None
 
     @cached_property
-    def unsided(self) -> Optional['BodyPart']:
+    def unsided(self) -> Optional["BodyPart"]:
         """BodyPart: Unisided version of the concept"""
         return self._index.get_by_id(self.unsided_id) if self.unsided_id is not None else None
 
     @cached_property
-    def children(self) -> Set['BodyPart']:
+    def children(self) -> Set["BodyPart"]:
         """Returns the set of children of this BodyPart."""
         return set(filter(self.is_child, self._index.get_all_body_parts()))
 
     @cached_property
-    def descendants(self) -> Set['BodyPart']:
+    def descendants(self) -> Set["BodyPart"]:
         """Returns the set of descendants of this BodyPart."""
-        descendants: Set['BodyPart'] = set(self.children)
+        descendants: Set["BodyPart"] = set(self.children)
         for child in self.children:
             descendants.update(child.descendants)
         return descendants
 
     @cached_property
-    def ancestors(self) -> List['BodyPart']:
+    def ancestors(self) -> List["BodyPart"]:
         """Returns the set of ancestors of this BodyPart."""
         if self.radlex_id == WHOLE_BODY_ID:
             return []
         return [self.contained_by] + self.contained_by.ancestors
 
-    def is_child(self, other: 'BodyPart') -> bool:
+    def is_child(self, other: "BodyPart") -> bool:
         """Check if the other BodyPart is a child of this one.
 
         Args:
@@ -219,9 +217,9 @@ class BodyPart(BodyPartData):
         """
         return other.radlex_id != self.radlex_id and other.contained_by_id == self.radlex_id  # pylint: disable=protected-access
 
-    def is_contained(self, other: 'BodyPart') -> bool:
+    def is_contained(self, other: "BodyPart") -> bool:
         """Check if this BodyPart is contained by other BodyPart.
-        
+
         Args:
             other (BodyPart): BodyPart to check against
 
@@ -229,11 +227,8 @@ class BodyPart(BodyPartData):
             bool: True if other among all containing BodyParts, False otherwise
         """
 
-        if other in self.ancestors:
-            return True
-        else:
-            return False
-    
+        return other in self.ancestors
+
     @cached_property
     def snomed_code(self) -> Optional[str]:
         """Return the most appropriate SNOMED code for the body part.
@@ -248,14 +243,14 @@ class BodyPart(BodyPartData):
         """
         if self.codes:
             for code in self.codes:
-                if code.system == 'SNOMED':
+                if code.system == "SNOMED":
                     return code.code
         if self.unsided:
             for code in self.unsided.codes:
-                if code.system == 'SNOMED':
+                if code.system == "SNOMED":
                     return code.code
         if self.contained_by and self.contained_by != self:
             for code in self.contained_by.codes:
-                if code.system == 'SNOMED':
+                if code.system == "SNOMED":
                     return code.code
         return None

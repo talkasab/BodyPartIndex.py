@@ -9,37 +9,65 @@ license = "ISC"
 homepage = "https://www.anatomiclocations.org"
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 
-[tool.poetry.dev-dependencies]
-pytest = "*"
-pytest-cov = "*"
-blue = "0.5.2"
-flake8 = "*"
-flake8-debugger = "*"
-flake8-pytest-style = "*"
-isort = "*"
-mypy = "*"
-pep8-naming = "*"
-pyupgrade = "*"
-bandit = "*"
-pip-audit = "*"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.2.1"
+pytest = "^8.0.0"
+mypy = "^1.8.0"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
-line_length = 100
+[tool.ruff]
+src = ["body_part_index"]
+line-length = 120
+exclude = [".venv", ".git", "__pycache__", "build", "dist", "venv"]
 
-[tool.blue]
-line-length = 100
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors (settings from FastAPI, thanks, @tiangolo!)
+  "F",   # pyflakes
+  "I",   # isort
+  "C4",  # flake8-comprehensions
+  "B",   # flake8-bugbear
+  "SIM", # flake8-simplify
+  "TCH", # flake8-type-checking
+]
+ignore = [
+  "C901",   # too complex
+  "COM812", # missing trailing comma
+  "COM819", # prohibited trailing comma
+  "D206",   # indent-with-spaces
+  "D300",   # triple-single-quotes
+  # "E111",  # indentation is not a multiple of four
+  # "E114",  # indentation is not a multiple of four (comment)
+  # "E117",  # over-indented
+  "ISC001", # single-line-implicit-string-concatenation
+  "ISC002", # multi-line-implicit-string-concatenation
+  "Q000",   # Remove bad quotes inline string
+  "Q001",   # Remove bad quotes from multiline string
+  "Q002",   # Remove bad quotes from docstring
+  "Q003",   # avoidable-escaped-quote
+  "W191",   # indentation contains tabs
+]
+
+[tool.ruff.format]
+preview = true
+
+[tool.ruff.lint.isort]
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+extra-standard-library = ["typing"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+known-first-party = []
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore::DeprecationWarning"]
 
 [tool.mypy]
+files = ["body_part_index"]
 ignore_missing_imports = true
 disallow_untyped_defs = true
-
